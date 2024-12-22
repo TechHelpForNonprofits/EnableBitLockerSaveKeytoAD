@@ -1,8 +1,12 @@
-#Used to enable Bitlocker on physical machines only. Does not work on VMs
+#Used to enable Bitlocker on physical or HyperV VMs. 
 #Dismounts external device
-$vol = (get-wmiobject -Class Win32_Volume | where{$_.drivetype -eq '2'}  )
-$Eject =  New-Object -comObject Shell.Application
-$Eject.NameSpace(17).ParseName($vol.driveletter).InvokeVerb(“Eject”)
+
+$vol= (Get-WmiObject -Class Win32_Volume | where {$_.drivetype -eq '2' -or $_.drivetype -eq '5'}  )
+
+foreach ($disks in $vol)  {
+    $Eject =  New-Object -comObject Shell.Application
+    $Eject.NameSpace(17).ParseName($disks.driveletter).InvokeVerb("Eject")
+}
 
 Start-Sleep -s 8
 
