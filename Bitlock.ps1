@@ -1,6 +1,13 @@
 #Used to enable Bitlocker on physical or HyperV VMs. 
-#Dismounts external device
 
+#Check to see if BitLocker is already enabled. If it is, exit the script.
+$checkBitLocker = Get-BitLockerVolume -MountPoint "C"
+If ($checkBitLocker.ProtectionStatus -eq "On")
+{ 
+    Exit
+}
+
+#Dismounts external device
 $vol= (Get-WmiObject -Class Win32_Volume | where {$_.drivetype -eq '2' -or $_.drivetype -eq '5'}  )
 
 foreach ($disks in $vol)  {
