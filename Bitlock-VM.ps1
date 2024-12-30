@@ -1,4 +1,12 @@
 #This works for Hyper-V virtual machines only
+
+#Checks to see if BitLocker is already enabled and exits script if it is.
+$checkBitLocker = Get-BitLockerVolume -MountPoint "C"
+If ($checkBitLocker.ProtectionStatus -eq "On")
+{ 
+    Exit
+}
+
 #finds the mounted ISO and ejects it since Bitlocker won't work if it's still mounted
 $vol = (get-wmiobject -Class Win32_Volume | where{$_.drivetype -eq '5'} )
 $Eject =  New-Object -comObject Shell.Application
